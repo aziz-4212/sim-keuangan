@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Apvcrh extends Model
+{
+    use HasFactory;
+    protected $connection = 'sqlsrv1';
+    protected $table = 'APVCRH';
+    public $timestamps = false;
+    protected  $guarded = [];
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class, 'VENCD', 'VENCD');
+    }
+}
