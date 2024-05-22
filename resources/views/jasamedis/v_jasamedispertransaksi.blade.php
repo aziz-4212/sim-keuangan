@@ -79,8 +79,8 @@
                                                 <td>{{ $a->NAMAPMR }}</td>
                                                 <td>{{ $a->NOPASIEN }}</td>
                                                 <td>{{ $a->NAMAPASIEN }}</td>
-                                                <td>{{ $a->BIAYAST }}</td>
-                                                <td>{{ $a->BIAYADR }}</td>
+                                                <td>{{ formatRupiah($a->BIAYAST) }}</td>
+                                                <td>{{ formatRupiah($a->BIAYADR) }}</td>
                                             </tr>
                                         @endforeach
                                     @else
