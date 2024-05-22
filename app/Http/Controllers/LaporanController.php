@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
+use App\Exports\DataExport;
+use App\Models\Apvcrh;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Exports\DataExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Apvcrh;
-use App\Models\Vendor;
 
 class LaporanController extends Controller
 {
@@ -20,11 +17,11 @@ class LaporanController extends Controller
         if (!empty($request->get('tanggal_mulai')) && !empty($request->get('tanggal_akhir'))) {
             $apvcrh = Apvcrh::whereDate('DOCDATE', '>=', $request->get('tanggal_mulai'))
                 ->whereDate('DOCDATE', '<=', $request->get('tanggal_akhir'))->orderBy('VENCD', 'desc')->paginate(15)->appends(request()->query());
-        }elseif (!empty($request->get('tanggal_mulai'))) {
+        } elseif (!empty($request->get('tanggal_mulai'))) {
             $apvcrh = Apvcrh::whereDate('DOCDATE', $request->get('tanggal_mulai'))->orderBy('VENCD', 'desc')->paginate(15)->appends(request()->query());
-        }elseif (!empty($request->get('tanggal_akhir'))) {
+        } elseif (!empty($request->get('tanggal_akhir'))) {
             $apvcrh = Apvcrh::whereDate('DOCDATE', $request->get('tanggal_akhir'))->orderBy('VENCD', 'desc')->paginate(15)->appends(request()->query());
-        }else {
+        } else {
             $apvcrh = Apvcrh::paginate(15)->appends(request()->query());
         }
         // $apvcrh = Apvcrh::first();
@@ -40,11 +37,11 @@ class LaporanController extends Controller
         if (!empty($request->get('tanggal_mulai')) && !empty($request->get('tanggal_akhir'))) {
             $apvcrh = Apvcrh::whereDate('DOCDATE', '>=', $request->get('tanggal_mulai'))
                 ->whereDate('DOCDATE', '<=', $request->get('tanggal_akhir'))->orderBy('VENCD', 'desc')->get();
-        }elseif (!empty($request->get('tanggal_mulai'))) {
+        } elseif (!empty($request->get('tanggal_mulai'))) {
             $apvcrh = Apvcrh::whereDate('DOCDATE', $request->get('tanggal_mulai'))->orderBy('VENCD', 'desc')->get();
-        }elseif (!empty($request->get('tanggal_akhir'))) {
+        } elseif (!empty($request->get('tanggal_akhir'))) {
             $apvcrh = Apvcrh::whereDate('DOCDATE', $request->get('tanggal_akhir'))->orderBy('VENCD', 'desc')->get();
-        }else {
+        } else {
             $apvcrh = Apvcrh::orderBy('VENCD', 'desc')->get();
         }
 
@@ -159,13 +156,13 @@ class LaporanController extends Controller
         }
 
         if (!empty($request->get('tanggal_mulai')) && !empty($request->get('tanggal_akhir'))) {
-            $nama_file_excel = 'Laporan Keuangan '.$request->get('jenis_layanan').' tanggal mulai '.$request->get('tanggal_mulai').' tanggal akhir '.$request->get('tanggal_akhir').'.xlsx';
-        }elseif (!empty($request->get('tanggal_mulai'))) {
-            $nama_file_excel = 'Laporan Keuangan '.$request->get('jenis_layanan').' tanggal mulai '.$request->get('tanggal_mulai').'.xlsx';
-        }elseif (!empty($request->get('tanggal_akhir'))) {
-            $nama_file_excel = 'Laporan Keuangan '.$request->get('jenis_layanan').' tanggal akhir '.$request->get('tanggal_akhir').'.xlsx';
-        }else {
-            $nama_file_excel = 'Laporan Keuangan tanggal'.$now.'.xlsx';
+            $nama_file_excel = 'Laporan Keuangan ' . $request->get('jenis_layanan') . ' tanggal mulai ' . $request->get('tanggal_mulai') . ' tanggal akhir ' . $request->get('tanggal_akhir') . '.xlsx';
+        } elseif (!empty($request->get('tanggal_mulai'))) {
+            $nama_file_excel = 'Laporan Keuangan ' . $request->get('jenis_layanan') . ' tanggal mulai ' . $request->get('tanggal_mulai') . '.xlsx';
+        } elseif (!empty($request->get('tanggal_akhir'))) {
+            $nama_file_excel = 'Laporan Keuangan ' . $request->get('jenis_layanan') . ' tanggal akhir ' . $request->get('tanggal_akhir') . '.xlsx';
+        } else {
+            $nama_file_excel = 'Laporan Keuangan tanggal' . $now . '.xlsx';
         }
         return Excel::download(new DataExport($data), $nama_file_excel);
     }

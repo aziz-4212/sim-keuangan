@@ -1,91 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>SIM Front Office | RSI Kendal</title>
-
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
-    <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
+    <!-- CSS files -->
+    <link href="{{ asset('assets/dist/css/tabler.min.css?1684106062') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/dist/css/tabler-flags.min.css?1684106062') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/dist/css/tabler-payments.min.css?1684106062') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/dist/css/tabler-vendors.min.css?1684106062') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/dist/css/demo.min.css?1684106062') }}" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ICO') }}" />
+    <style>
+        @import url('https://rsms.me/inter/inter.css');
+
+        :root {
+            --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+    </style>
 </head>
 
-<body class="hold-transition login-page">
-    <div class="login-box">
-        @if (session('error'))
-            <div class="alert alert-danger" id="error-alert">
-                {{ session('error') }}
-            </div>
+<body class=" d-flex flex-column">
+    <div class="page page-center">
+        <div class="container container-tight py-4">
+            {{-- <div class="text-center mb-4">
+                <a href="." class="navbar-brand navbar-brand-autodark"><img src="./static/logo.svg" height="36"
+                        alt=""></a>
+            </div> --}}
+            @if (session('error'))
+                <div class="alert alert-danger" id="error-alert">
+                    {{ session('error') }}
+                </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var errorAlert = document.getElementById('error-alert');
-                    if (errorAlert) {
-                        setTimeout(function() {
-                            errorAlert.style.display = 'none';
-                        }, 3000); // 3 detik (3000 ms)
-                    }
-                });
-            </script>
-        @endif
-
-        <!-- /.login-logo -->
-        <div class="card card-outline card-maroon">
-            <div class="card-header text-center">
-                <a href="" class="h1"><b>SIM Keuangan</b></a>
-            </div>
-            <div class="card-body">
-                <p class="login-box-msg">Log in SIM Keuangan RSI Kendal</p>
-
-                <form action="{{ route('loginCheck') }}" method="post">
-                    @csrf
-                    <div class="input-group mb-3">
-                        <input type="text" name="USLOGNM" class="form-control" placeholder="Username"
-                            autocomplete="off">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-user"></span>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var errorAlert = document.getElementById('error-alert');
+                        if (errorAlert) {
+                            setTimeout(function() {
+                                errorAlert.style.display = 'none';
+                            }, 3000); // 3 detik (3000 ms)
+                        }
+                    });
+                </script>
+            @endif
+            <div class="card card-md">
+                <div class="card-body">
+                    <h2 class="h2 text-center mb-4">Login SIM Keuangan</h2>
+                    <form action="{{ route('loginCheck') }}" method="POST" autocomplete="off" novalidate>
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" placeholder="Username" autocomplete="off"
+                                name="USLOGNM">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">
+                                Password
+                            </label>
+                            <div class="input-group input-group-flat">
+                                <input type="password" class="form-control" placeholder="Password" autocomplete="off"
+                                    name="USPASS">
                             </div>
                         </div>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="password" name="USPASS" class="form-control" placeholder="Password"
-                            autocomplete="off">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
+                        {{-- <div class="mb-2">
+                            <label class="form-check">
+                                <input type="checkbox" class="form-check-input" />
+                                <span class="form-check-label">Remember me</span>
+                            </label>
+                        </div> --}}
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary w-100">Log in</button>
                         </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- /.col -->
-                        <div class="col-12">
-                            <button type="submit" class="btn bg-maroon btn-block"><span style="color: white">Log In</span></button>
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
-
-    <!-- jQuery -->
-    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
-    <!-- Bootstrap 4 -->
-    <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- AdminLTE App -->
-    <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+    <!-- Libs JS -->
+    <!-- Tabler Core -->
+    <script src="{{ asset('assets/dist/js/demo-theme.min.js?1684106062') }}"></script>
+    <script src="{{ asset('assets/dist/js/tabler.min.js?1684106062') }}" defer></script>
+    <script src="{{ asset('assets/dist/js/demo.min.js?1684106062') }}" defer></script>
 </body>
 
 </html>

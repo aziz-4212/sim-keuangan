@@ -12,10 +12,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-*/
-
-
-
+ */
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/loginCheck', [AuthController::class, 'loginCheck'])->name('loginCheck');
@@ -28,4 +25,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('/laporan/download', [LaporanController::class, 'download_excel'])->name('laporan.download-excel');
+
+    Route::get('/jasamedis', [JasaMedisController::class, 'jasaMedis'])->name('jasaMedis');
 });
