@@ -9,7 +9,6 @@ class JasaMedisController extends Controller
 {
     public function jasaMedis(Request $request)
     {
-        $perPage = 15;
         $result = null;
 
         $search = $request->input('search');
@@ -33,12 +32,16 @@ class JasaMedisController extends Controller
                 ->join('PASIEN', 'PASIEN.NOPASIEN', '=', 'REGPAS.NOPASIEN')
                 ->where('TRXPMR.NOREG', '=', $search);
 
-            $paginationParams = $request->except('page');
-            $paginationParams['search'] = $search;
+            $result = $query->get();
 
-            $result = $query->paginate($perPage)->appends($paginationParams);
+            // Menghitung total BIAYAST dan BIAYADR
+            $totalBiayaST = $query->sum('TRXPMR.BIAYAST');
+            $totalBiayaDR = $query->sum('TRXPMR.BIAYADR');
+        } else {
+            $totalBiayaST = 0;
+            $totalBiayaDR = 0;
         }
 
-        return view('jasamedis.v_jasamedispertransaksi', compact('result'));
+        return view('jasamedis.v_jasamedispertransaksi', compact('result', 'totalBiayaST', 'totalBiayaDR'));
     }
 }

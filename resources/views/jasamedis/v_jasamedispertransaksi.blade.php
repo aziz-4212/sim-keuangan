@@ -83,18 +83,21 @@
                                                 <td>{{ formatRupiah($a->BIAYADR) }}</td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Total</strong></td>
+                                            <td><strong>{{ formatRupiah($totalBiayaST) }}</strong></td>
+                                            <td><strong>{{ formatRupiah($totalBiayaDR) }}</strong></td>
+                                        </tr>
                                     @else
                                         <tr>
-                                            <td colspan="10" class="text-center"><img src="{{ asset('img/search.png') }}"
-                                                    alt="empty" width="200px"></td>
+                                            <td colspan="10" class="text-center">
+                                                <img src="{{ asset('img/search.png') }}" alt="empty" width="200px">
+                                            </td>
                                         </tr>
                                     @endif
                                 </tbody>
                             </table>
                         </div>
-                        @if ($result && $result->count() > 0)
-                            {{ $result->links('layouts._partials._pagination') }}
-                        @endif
                     </div>
                 </div>
             </div>
