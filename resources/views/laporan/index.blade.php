@@ -103,18 +103,18 @@
                                     <tr>
                                         <th scope="col">VENCD</th>
                                         <th scope="col">VCRNO</th>
-                                        <th scope="col">APGRPID</th>
+                                        {{-- <th scope="col">APGRPID</th>
                                         <th scope="col">CSTERMID</th>
                                         <th scope="col">CSMONTH</th>
-                                        <th scope="col">CSYEAR</th>
+                                        <th scope="col">CSYEAR</th> --}}
                                         <th scope="col">USLOGNM</th>
-                                        <th scope="col">MODULID</th>
+                                        {{-- <th scope="col">MODULID</th>
                                         <th scope="col">REFDOCTP</th>
                                         <th scope="col">CCODEGRP</th>
                                         <th scope="col">APBTCHNO</th>
-                                        <th scope="col">APDPNO</th>
+                                        <th scope="col">APDPNO</th> --}}
                                         <th scope="col">DOCDATE</th>
-                                        <th scope="col">DOCDESC</th>
+                                        {{-- <th scope="col">DOCDESC</th>
                                         <th scope="col">DOCTEXT</th>
                                         <th scope="col">DOCINPUT</th>
                                         <th scope="col">DOCSTAT</th>
@@ -127,9 +127,9 @@
                                         <th scope="col">TAXHAMT</th>
                                         <th scope="col">DPRATE</th>
                                         <th scope="col">DPSAMT</th>
-                                        <th scope="col">DPHAMT</th>
+                                        <th scope="col">DPHAMT</th> --}}
                                         <th scope="col">VCRSAMT</th>
-                                        <th scope="col">VCRHAMT</th>
+                                        {{-- <th scope="col">VCRHAMT</th>
                                         <th scope="col">COMPLETE</th>
                                         <th scope="col">DUEDATE</th>
                                         <th scope="col">DISCDATE</th>
@@ -147,11 +147,11 @@
                                         <th scope="col">PROGRESS</th>
                                         <th scope="col">PROGRESSNET</th>
                                         <th scope="col">VALIDDATE</th>
-                                        <th scope="col">VALIDBY</th>
+                                        <th scope="col">VALIDBY</th> --}}
                                         <th scope="col">FAKTDATE</th>
                                         <th scope="col">FAKTNO</th>
                                         <th scope="col">VENNM</th>
-                                        <th scope="col">VENADD</th>
+                                        {{-- <th scope="col">VENADD</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -159,18 +159,18 @@
                                         <tr class="clickable-row">
                                             <td>{{ $item->VENCD }}</td>
                                             <td>{{ $item->VCRNO }}</td>
-                                            <td>{{ $item->APGRPID }}</td>
+                                            {{-- <td>{{ $item->APGRPID }}</td>
                                             <td>{{ $item->CSTERMID }}</td>
                                             <td>{{ $item->CSMONTH }}</td>
-                                            <td>{{ $item->CSYEAR }}</td>
+                                            <td>{{ $item->CSYEAR }}</td> --}}
                                             <td>{{ $item->USLOGNM }}</td>
-                                            <td>{{ $item->MODULID }}</td>
+                                            {{-- <td>{{ $item->MODULID }}</td>
                                             <td>{{ $item->REFDOCTP }}</td>
                                             <td>{{ $item->CCODEGRP }}</td>
                                             <td>{{ $item->APBTCHNO }}</td>
-                                            <td>{{ $item->APDPNO }}</td>
+                                            <td>{{ $item->APDPNO }}</td> --}}
                                             <td>{{ $item->DOCDATE }}</td>
-                                            <td>{{ $item->DOCDESC }}</td>
+                                            {{-- <td>{{ $item->DOCDESC }}</td>
                                             <td>{{ $item->DOCTEXT }}</td>
                                             <td>{{ $item->DOCINPUT }}</td>
                                             <td>{{ $item->DOCSTAT }}</td>
@@ -183,9 +183,9 @@
                                             <td>{{ $item->TAXHAMT }}</td>
                                             <td>{{ $item->DPRATE }}</td>
                                             <td>{{ $item->DPSAMT }}</td>
-                                            <td>{{ $item->DPHAMT }}</td>
+                                            <td>{{ $item->DPHAMT }}</td> --}}
                                             <td>{{ $item->VCRSAMT }}</td>
-                                            <td>{{ $item->VCRHAMT }}</td>
+                                            {{-- <td>{{ $item->VCRHAMT }}</td>
                                             <td>{{ $item->COMPLETE }}</td>
                                             <td>{{ $item->DUEDATE }}</td>
                                             <td>{{ $item->DISCDATE }}</td>
@@ -203,11 +203,15 @@
                                             <td>{{ $item->PROGRESS }}</td>
                                             <td>{{ $item->PROGRESSNET }}</td>
                                             <td>{{ $item->VALIDDATE }}</td>
-                                            <td>{{ $item->VALIDBY }}</td>
-                                            <td>{{ $item->FAKTDATE }}</td>
+                                            <td>{{ $item->VALIDBY }}</td> --}}
+                                            {{-- <td>{{ $item->FAKTDATE }}</td> --}}
+
+                                            <td>
+                                                {{ $item->FAKTDATE ? \Carbon\Carbon::parse($item->FAKTDATE)->format('d-m-Y') : '-' }}
+                                            </td>
                                             <td>{{ $item->FAKTNO }}</td>
                                             <td>{{ $item->VENNM }}</td>
-                                            <td>{{ $item->VENADD }}</td>
+                                            {{-- <td>{{ $item->VENADD }}</td> --}}
                                         </tr>
                                     @endforeach
                                 </tbody>
