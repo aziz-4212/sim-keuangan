@@ -169,7 +169,10 @@
                                             <td>{{ $item->CCODEGRP }}</td>
                                             <td>{{ $item->APBTCHNO }}</td>
                                             <td>{{ $item->APDPNO }}</td> --}}
-                                            <td>{{ $item->DOCDATE }}</td>
+                                            {{-- <td>{{ $item->DOCDATE }}</td> --}}
+                                            <td>
+                                                {{ $item->DOCDATE ? \Carbon\Carbon::parse($item->DOCDATE)->format('d-m-Y') : '-' }}
+                                            </td>
                                             {{-- <td>{{ $item->DOCDESC }}</td>
                                             <td>{{ $item->DOCTEXT }}</td>
                                             <td>{{ $item->DOCINPUT }}</td>
