@@ -27,4 +27,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/laporan/download', [LaporanController::class, 'download_excel'])->name('laporan.download-excel');
 
     Route::get('/jasamedis', [JasaMedisController::class, 'jasaMedis'])->name('jasaMedis');
+
+    // =====================================Klaim Jasa Medis===========================================
+    Route::get('/cek-klaim', [KlaimController::class, 'cek_klaim'])->name('cek-klaim');
+    Route::post('/cek-klaim/proses-selisih', [KlaimController::class, 'proses_selisih'])->name('proses-selisih');
+    Route::get('/cek-klaim/selisih-minus', [KlaimController::class, 'cek_klaim_minus_selisih'])->name('cek-klaim-minus-selisih');
+    Route::get('/cek-klaim/jasa-visit-minus', [KlaimController::class, 'jasa_visit_minus'])->name('jasa-visit-minus');
+    Route::get('/detail-jasa-visit', [KlaimController::class, 'get_detail_jasa_visit']);
+    Route::post('/cek-klaim/jasa-visit-minus/update-jasa-visit', [KlaimController::class, 'update_jasa_visit'])->name('update-jasa-visit');
+    // =====================================End Klaim Jasa Medis===========================================
+
 });
