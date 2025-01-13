@@ -123,11 +123,15 @@
                                                     value="Rp {{ number_format($total_jasavisit, 0, ',', '.') }}"
                                                     style="color: black" disabled>
                                             </td>
+                                            
                                             <td>
+                                                @if($item->STATUS == 1)
+                                                @else
                                                 <input type="text" class="form-control" name="disabled-input"
                                                     value="Rp {{ number_format($selisih_jasavisit, 0, ',', '.') }}"
                                                     style="color: {{ $selisih_jasavisit < 0 ? 'red' : 'black' }};"
                                                     disabled>
+                                                @endif
                                             </td>
                                             <td>
                                                 @if ($item->STATUS == 1)
