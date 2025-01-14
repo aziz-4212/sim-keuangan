@@ -11,7 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class KlaimController extends Controller
 {
-    public function cek_klaim(Request $request)
+    // =====================================Klaim Jasa Medis Non Tindakan===========================================
+
+    public function cek_klaim_non_tindakan(Request $request)
     {
         $search = $request->input('search');
         $query = Klaim::query();
@@ -39,7 +41,7 @@ class KlaimController extends Controller
         return view('klaim.cek-klaim', compact('data_klaim'));
     }
 
-    public function proses_selisih()
+    public function proses_selisih_non_tindakan()
     {
         // Ambil data dari tabel klaim_minus di mana NOREG dan SELISIH masih kosong
         $klaimMinusData = DB::table('klaim_minus')
@@ -72,7 +74,7 @@ class KlaimController extends Controller
         return redirect()->route('cek-klaim-minus-selisih')->with('success', 'Proses Pencarian Selisih Minus selesai.');
     }
 
-    public function cek_klaim_minus_selisih(Request $request)
+    public function cek_klaim_minus_selisih_non_tindakan(Request $request)
     {
         $search = $request->input('search');
         $query = Klaim::query()
@@ -115,118 +117,7 @@ class KlaimController extends Controller
         return view('klaim.cek-klaim-proses', compact('data_klaim'));
     }
 
-    // public function jasa_visit_minus(Request $request)
-    // {
-    //     // Ambil data klaim dari database
-    //     $data_klaim = DB::connection('sqlsrv')
-    //         ->table('klaim_minus') // Ganti dengan nama tabel sebenarnya
-    //         ->select(
-    //             'klaim_minus.SEP', 
-    //             'klaim_minus.INACBG', 
-    //             'klaim_minus.TARIFRS', 
-    //             'klaim_minus.TARIFKLAIM', 
-    //             'klaim_minus.JENIS', 
-    //             'klaim_minus.NOREG', 
-    //             'klaim_minus.SELISIH'
-    //         )
-    //         ->where('klaim_minus.SELISIH', '<', 0)
-    //         ->leftJoin('ERM2.dbo.ibs_laporan_operasi', 'klaim_minus.NOREG', '=', 'ERM2.dbo.ibs_laporan_operasi.noreg')
-    //         ->whereNull('ERM2.dbo.ibs_laporan_operasi.noreg') // Filter data tanpa laporan operasi
-    //         ->whereNotNull('klaim_minus.NOREG')
-    //         ->groupBy(
-    //             'klaim_minus.SEP', 
-    //             'klaim_minus.INACBG', 
-    //             'klaim_minus.TARIFRS', 
-    //             'klaim_minus.TARIFKLAIM', 
-    //             'klaim_minus.JENIS', 
-    //             'klaim_minus.NOREG', 
-    //             'klaim_minus.SELISIH'
-    //         )
-    //         ->orderBy('klaim_minus.SELISIH', 'ASC')
-    //         ->get();
-
-    //     // Filter data klaim dengan perhitungan `SELISIH JASA VISIT`
-    //     $filtered_data = $data_klaim->filter(function ($item) {
-    //         $enampersen = 0.06 * $item->TARIFKLAIM;
-
-    //         $jasa_visit = DB::connection('sqlsrv')
-    //             ->table('TRXPMR')
-    //             ->where('NOREG', $item->NOREG)
-    //             ->where('KODEPMR', 'like', 'V%')
-    //             ->sum('BIAYADRRIIL'); // Gunakan sum langsung
-
-    //         $selisih_jasavisit = $enampersen - $jasa_visit;
-
-    //         return $selisih_jasavisit < 0;
-    //     });
-
-    //     dd($filtered_data);
-
-    //     // Kembalikan view dengan data yang difilter
-    //     return view('klaim.cek-klaim-jasa-visit', [
-    //         'data_klaim' => $filtered_data->paginate(10) // Gunakan paginate jika data besar
-    //     ]);
-    // }
-
-    // public function jasa_visit_minus(Request $request)
-    // {
-    //     // Ambil data klaim dengan klaim minus
-    //     $data_klaim = DB::connection('sqlsrv')
-    //         ->table('klaim_minus')
-    //         ->select(
-    //             'klaim_minus.SEP', 
-    //             'klaim_minus.INACBG', 
-    //             'klaim_minus.TARIFRS', 
-    //             'klaim_minus.TARIFKLAIM', 
-    //             'klaim_minus.JENIS', 
-    //             'klaim_minus.NOREG', 
-    //             'klaim_minus.SELISIH'
-    //         )
-    //         ->where('klaim_minus.SELISIH', '<', 0)
-    //         ->leftJoin('ERM2.dbo.ibs_laporan_operasi', 'klaim_minus.NOREG', '=', 'ERM2.dbo.ibs_laporan_operasi.noreg')
-    //         ->whereNull('ERM2.dbo.ibs_laporan_operasi.noreg') // Filter data tanpa laporan operasi
-    //         ->whereNotNull('klaim_minus.NOREG')
-    //         ->groupBy(
-    //             'klaim_minus.SEP', 
-    //             'klaim_minus.INACBG', 
-    //             'klaim_minus.TARIFRS', 
-    //             'klaim_minus.TARIFKLAIM', 
-    //             'klaim_minus.JENIS', 
-    //             'klaim_minus.NOREG', 
-    //             'klaim_minus.SELISIH'
-    //         )
-    //         ->orderBy('klaim_minus.SELISIH', 'ASC')
-    //         ->get();
-
-    //     // Ambil semua data Jasa Visit dari TRXPMR sekaligus
-    //     $jasa_visits = DB::connection('sqlsrv')
-    //         ->table('TRXPMR')
-    //         ->select('NOREG', DB::raw('SUM(BIAYADRRIIL) as total_biaya'))
-    //         ->whereIn('NOREG', $data_klaim->pluck('NOREG')->toArray()) // Ambil hanya NOREG yang relevan
-    //         ->where('KODEPMR', 'like', 'V%')
-    //         ->groupBy('NOREG')
-    //         ->get()
-    //         ->keyBy('NOREG'); // Index berdasarkan NOREG untuk akses cepat
-
-    //     // Filter data klaim berdasarkan perhitungan selisih jasa visit
-    //     $filtered_data = $data_klaim->filter(function ($item) use ($jasa_visits) {
-    //         $enampersen = 0.06 * $item->TARIFKLAIM;
-
-    //         // Cari jasa visit berdasarkan NOREG
-    //         $jasa_visit = $jasa_visits->get($item->NOREG)?->total_biaya ?? 0;
-
-    //         $selisih_jasavisit = $enampersen - $jasa_visit;
-
-    //         return $selisih_jasavisit < 0;
-    //     });
-
-    //     // Kembalikan view dengan data yang difilter
-    //     return view('klaim.cek-klaim-jasa-visit', [
-    //         'data_klaim' => $filtered_data->paginate(10) // Gunakan paginate jika data besar
-    //     ]);
-    // }
-
-    public function jasa_visit_minus(Request $request)
+    public function jasa_visit_minus_non_tindakan(Request $request)
     {
         // Ambil data klaim dengan klaim minus
         $data_klaim = DB::connection('sqlsrv')
@@ -336,55 +227,6 @@ class KlaimController extends Controller
         ]);
     }
 
-    // public function update_jasa_visit(Request $request)
-    // {
-    //     // Ambil data dari request
-    //     $data = $request->all();
-
-    //     // Log data yang diterima
-    //     // Log::info('Data yang diterima:', $data);
-    //     // Dump data untuk melihat isinya
-    //     dd($data);
-        
-    //     // Lakukan validasi jika diperlukan
-    //     $validated = $request->validate([
-    //         'NOPMR.*' => 'required|exists:trxpmr_update,NOPMR', // Pastikan NOPMR ada di tabel TRXPMR_UPDATE
-    //         'BIAYADRRIIL.*' => 'required|numeric',
-    //         'UPDATE_BIAYADR.*' => 'required|numeric',
-    //         'BIAYARSRIIL.*' => 'required|numeric',
-    //         'UPDATE_BIAYARS.*' => 'required|numeric',
-    //     ]);
-
-    //     try {
-    //         // Lakukan iterasi untuk setiap data yang diterima
-    //         foreach ($data['NOPMR'] as $index => $nopmr) {
-    //             // Temukan record berdasarkan NOPMR dan lakukan update
-    //             $trxpmrUpdate = TrxpmrUpdate::where('NOPMR', $nopmr)->first();
-
-    //             if ($trxpmrUpdate) {
-    //                 // Update data sesuai dengan yang dikirimkan
-    //                 $trxpmrUpdate->BIAYADRRIIL = $data['BIAYADRRIIL'][$index];
-    //                 $trxpmrUpdate->UPDATE_BIAYADR = $data['UPDATE_BIAYADR'][$index];
-    //                 $trxpmrUpdate->BIAYARSRIIL = $data['BIAYARSRIIL'][$index];
-    //                 $trxpmrUpdate->UPDATE_BIAYARS = $data['UPDATE_BIAYARS'][$index];
-
-    //                 // Simpan perubahan
-    //                 $trxpmrUpdate->save();
-    //             }
-    //         }
-
-    //         // Jika update berhasil, beri respons sukses
-    //         return response()->json([
-    //             'message' => 'Data berhasil diperbarui',
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         // Jika terjadi error, beri respons error
-    //         return response()->json([
-    //             'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-    //         ], 500);
-    //     }
-    // }
-
     public function update_jasa_visit(Request $request)
     {
         // Ambil data dari request
@@ -443,5 +285,279 @@ class KlaimController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+    // =====================================End Klaim Jasa Medis Non Tindakan===========================================
+
+
+    // =====================================Klaim Jasa Medis Tindakan IBS===========================================
+    public function cek_klaim_minus_selisih_tindakan (Request $request)
+    {
+        $search = $request->input('search');
+        $query = Klaim::query()
+            ->from('klaim_minus')
+            ->select(
+                'klaim_minus.SEP', 
+                'klaim_minus.INACBG', 
+                'klaim_minus.TARIFRS', 
+                'klaim_minus.TARIFKLAIM', 
+                'klaim_minus.JENIS', 
+                'klaim_minus.NOREG', 
+                'klaim_minus.SELISIH'
+            )
+            ->where('klaim_minus.SELISIH', '<', 0)
+            ->leftJoin(
+                'ERM2.dbo.ibs_laporan_operasi', 
+                'klaim_minus.NOREG', 
+                '=', 
+                'ERM2.dbo.ibs_laporan_operasi.noreg'
+            )
+            ->whereNotNull('ERM2.dbo.ibs_laporan_operasi.noreg') // Filter data tanpa laporan operasi
+            ->whereNotNull('klaim_minus.NOREG')
+            ->groupBy(
+                'klaim_minus.SEP', 
+                'klaim_minus.INACBG', 
+                'klaim_minus.TARIFRS', 
+                'klaim_minus.TARIFKLAIM', 
+                'klaim_minus.JENIS', 
+                'klaim_minus.NOREG', 
+                'klaim_minus.SELISIH'
+            )
+            ->orderBy('klaim_minus.SELISIH', 'ASC');
+
+        if ($search) {
+            $query->where('klaim_minus.SEP', 'like', '%' . $search . '%');
+        }
+
+        $data_klaim = $query->paginate(10);
+
+        return view('klaim.tindakan.cek-klaim-proses-tindakan', compact('data_klaim'));
+    }
+
+    public function jasa_medis_minus_tindakan(Request $request)
+    {
+        // Ambil data klaim dengan klaim minus
+        $data_klaim = DB::connection('sqlsrv')
+            ->table('klaim_minus')
+            ->select(
+                'klaim_minus.SEP', 
+                'klaim_minus.INACBG', 
+                'klaim_minus.TARIFRS', 
+                'klaim_minus.TARIFKLAIM', 
+                'klaim_minus.JENIS', 
+                'klaim_minus.NOREG', 
+                'klaim_minus.SELISIH',
+                'klaim_minus.STATUS_IBS'
+            )
+            ->where('klaim_minus.SELISIH', '<', 0)
+            ->leftJoin('ERM2.dbo.ibs_laporan_operasi', 'klaim_minus.NOREG', '=', 'ERM2.dbo.ibs_laporan_operasi.noreg')
+            ->whereNotNull('ERM2.dbo.ibs_laporan_operasi.noreg') // Filter data tanpa laporan operasi
+            ->whereNotNull('klaim_minus.NOREG')
+            ->groupBy(
+                'klaim_minus.SEP', 
+                'klaim_minus.INACBG', 
+                'klaim_minus.TARIFRS', 
+                'klaim_minus.TARIFKLAIM', 
+                'klaim_minus.JENIS', 
+                'klaim_minus.NOREG', 
+                'klaim_minus.SELISIH',
+                'klaim_minus.STATUS_IBS'
+            )
+            ->orderBy('klaim_minus.SELISIH', 'ASC')
+            ->get();
+
+        // Ambil semua data Jasa Medis dari TRXPMR sekaligus
+        $jasa_medis_all = DB::connection('sqlsrv')
+            ->table('TRXPMR')
+            ->select('NOREG', DB::raw('SUM(BIAYADRRIIL) as total_biaya'))
+            ->whereIn('NOREG', $data_klaim->pluck('NOREG')->toArray()) // Ambil hanya NOREG yang relevan
+            ->whereIn('KODEPMR', ['OKAD01','OKAD02'])
+            ->groupBy('NOREG')
+            ->get()
+            ->keyBy('NOREG'); // Index berdasarkan NOREG untuk akses cepat
+
+        // Filter data klaim berdasarkan perhitungan selisih jasa medis
+        $filtered_data = $data_klaim->filter(function ($item) use ($jasa_medis_all) {
+            $duapuluhlimapersen = 0.25 * $item->TARIFKLAIM;
+
+            // Cari jasa medis berdasarkan NOREG
+            $jasa_medis = $jasa_medis_all->get($item->NOREG)?->total_biaya ?? 0;
+
+            $selisih_jasamedis = $duapuluhlimapersen - $jasa_medis;
+
+            return $selisih_jasamedis < 0;
+        });
+
+        // Manual Pagination
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10; // Jumlah item per halaman
+        $currentPageItems = $filtered_data->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $paginatedData = new LengthAwarePaginator(
+            $currentPageItems, 
+            $filtered_data->count(), 
+            $perPage, 
+            $currentPage,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+
+        // Kembalikan view dengan data yang dipaginasi
+        return view('klaim.tindakan.cek-klaim-jasa-medis-tindakan', ['data_klaim' => $paginatedData]);
+    }
+
+    // public function get_detail_jasa_medis_tindakan (Request $request)
+    // {
+    //     $noreg = $request->input('noreg');
+    //     $duapuluhlimapersen = $request->input('duapuluhlimapersen');
+
+    //     $status = DB::connection('sqlsrv')
+    //     ->table('klaim_minus')
+    //     ->select('STATUS_IBS')
+    //     ->where('NOREG', $noreg)
+    //     ->first();
+
+    //     $showUpdateButton = ($status && $status->STATUS_IBS != 1);
+
+    //     // Query data jasa visit berdasarkan NOREG
+    //     $jasa_visit_dokter = DB::connection('sqlsrv')
+    //         ->table('TRXPMR')
+    //         ->select('TRXPMR.NOPMR','TRXPMR.NOREG', 'TRXPMR.KODEPMR', 'TRXPMR.BIAYADRRIIL', 'TRXPMR.BIAYARSRIIL', 'MAPMR.NAMAPMR')
+    //         ->join('MAPMR', 'TRXPMR.KODEPMR', '=', 'MAPMR.KODEPMR')
+    //         ->whereIn('TRXPMR.KODEPMR', ['OKAD01','OKAD02'])
+    //         ->where('TRXPMR.NOREG', $noreg)
+    //         ->orderBy('TRXPMR.NOPMR', 'ASC')
+    //         ->get();
+
+        
+    //      // Menambahkan perhitungan ke setiap data jasa visit
+    //     $jasa_visit_dokter = $jasa_visit_dokter->map(function ($item) use ($duapuluhlimapersen) {
+    //         $jasa_okad01 = round(($duapuluhlimapersen * 66.7) / 100, 2); // 66.7% dari $duapuluhlimapersen
+    //         $jasa_okad02 = $duapuluhlimapersen - $jasa_okad01; // Sisa dari $duapuluhlimapersen
+
+    //         // Menentukan perhitungan berdasarkan KODEPMR
+    //         if ($item->KODEPMR === 'OKAD01') {
+    //             $item->jasa_dialokasikan = $jasa_okad01;
+    //         } elseif ($item->KODEPMR === 'OKAD02') {
+    //             $item->jasa_dialokasikan = $jasa_okad02;
+    //         } else {
+    //             $item->jasa_dialokasikan = 0; // Default jika KODEPMR tidak dikenal
+    //         }
+
+    //         return $item;
+    //     });
+
+    //     // Kembalikan data sebagai JSON
+    //     return response()->json([
+    //         'jasa_visit_dokter' => $jasa_visit_dokter,
+    //         'showUpdateButton' => $showUpdateButton,
+    //     ]);
+    // }
+
+    public function get_detail_jasa_medis_tindakan(Request $request)
+    {
+        $noreg = $request->input('noreg');
+        $duapuluhlimapersen = $request->input('duapuluhlimapersen');
+
+        $status = DB::connection('sqlsrv')
+            ->table('klaim_minus')
+            ->select('STATUS_IBS')
+            ->where('NOREG', $noreg)
+            ->first();
+
+        $showUpdateButton = ($status && $status->STATUS_IBS != 1);
+
+        // Query data jasa visit berdasarkan NOREG
+        $jasa_visit_dokter = DB::connection('sqlsrv')
+            ->table('TRXPMR')
+            ->select('TRXPMR.NOPMR', 'TRXPMR.NOREG', 'TRXPMR.KODEPMR', 'TRXPMR.BIAYADRRIIL', 'TRXPMR.BIAYARSRIIL', 'MAPMR.NAMAPMR')
+            ->join('MAPMR', 'TRXPMR.KODEPMR', '=', 'MAPMR.KODEPMR')
+            ->whereIn('TRXPMR.KODEPMR', ['OKAD01', 'OKAD02'])
+            ->where('TRXPMR.NOREG', $noreg)
+            ->orderBy('TRXPMR.NOPMR', 'ASC')
+            ->get();
+
+        // Hitung total BIAYADRRIIL untuk setiap KODEPMR
+        $total_biayadrriil_okad01 = $jasa_visit_dokter->where('KODEPMR', 'OKAD01')->sum('BIAYADRRIIL');
+        $total_biayadrriil_okad02 = $jasa_visit_dokter->where('KODEPMR', 'OKAD02')->sum('BIAYADRRIIL');
+
+        // Hitung total alokasi untuk setiap KODEPMR
+        $alokasi_okad01 = round(($duapuluhlimapersen * 66.7) / 100, 2);
+        $alokasi_okad02 = $duapuluhlimapersen - $alokasi_okad01;
+
+        // Menambahkan perhitungan ke setiap data jasa visit
+        $jasa_visit_dokter = $jasa_visit_dokter->map(function ($item) use (
+            $total_biayadrriil_okad01,
+            $total_biayadrriil_okad02,
+            $alokasi_okad01,
+            $alokasi_okad02,
+        ) {
+            if ($item->KODEPMR === 'OKAD01' && $total_biayadrriil_okad01 > 0) {
+                // Proporsi untuk OKAD01
+                $item->jasa_dialokasikan = round(($item->BIAYADRRIIL / $total_biayadrriil_okad01) * $alokasi_okad01, 2);
+            } elseif ($item->KODEPMR === 'OKAD02' && $total_biayadrriil_okad02 > 0) {
+                // Proporsi untuk OKAD02
+                $item->jasa_dialokasikan = round(($item->BIAYADRRIIL / $total_biayadrriil_okad02) * $alokasi_okad02, 2);
+            } else {
+                $item->jasa_dialokasikan = 0; // Default jika KODEPMR tidak dikenal atau tidak ada data
+            }
+
+            return $item;
+        });
+
+        // Kembalikan data sebagai JSON
+        return response()->json([
+            'jasa_visit_dokter' => $jasa_visit_dokter,
+            'showUpdateButton' => $showUpdateButton,
+        ]);
+    }
+
+    public function update_jasa_medis_tindakan(Request $request)
+    {
+        // Ambil data dari request
+        $data = $request->all();
+        $userlog = auth()->user()->user_log->USLOGNM;
+        $currentDate = Carbon::now()->setTimezone('Asia/Jakarta');
+
+        try {
+            // Iterasi data dan update menggunakan query builder
+            foreach ($data['NOPMR'] as $index => $nopmr) {
+                DB::connection('sqlsrv')
+                ->table('LOG_UPDATE_TRXPMR')
+                ->insert([
+                    'NOREG' => $data['NOREG'][$index],
+                    'NOPMR' => $data['NOPMR'][$index],
+                    'KODEPMR' => $data['KODEPMR'][$index],
+                    'BIAYADRRIIL' => $data['BIAYADRRIIL'][$index],
+                    'BIAYADRRIIL_UPDATE' => $data['UPDATE_BIAYADR'][$index],
+                    'BIAYARSRIIL' => $data['BIAYARSRIIL'][$index],
+                    'BIAYARSRIIL_UPDATE' => $data['UPDATE_BIAYARS'][$index],
+                    'USERLOG' => $userlog,
+                    'CREATED_AT' => $currentDate,
+                ]);
+
+                DB::connection('sqlsrv')
+                    ->table('TRXPMR')
+                    ->where('NOPMR', $nopmr)
+                    ->update([
+                        'BIAYADRRIIL' => $data['UPDATE_BIAYADR'][$index],
+                        'BIAYARSRIIL' => $data['UPDATE_BIAYARS'][$index], // Opsional: jika tabel memiliki kolom `updated_at`
+                    ]);
+                
+                DB::connection('sqlsrv')
+                    ->table('klaim_minus')
+                    ->where('NOREG', $data['NOREG'][$index])
+                    ->update([
+                        'STATUS_IBS' => 1,
+                    ]);
+            }
+
+            // Jika update berhasil, beri respons sukses
+            return redirect()->back()->with('success', 'Data berhasil diperbarui');
+        } catch (\Exception $e) {
+            // Jika terjadi error, beri respons error
+            // return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage(),], 500);
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    // =====================================End Klaim Jasa Medis Tindakan IBS===========================================
 
 }

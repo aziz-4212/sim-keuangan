@@ -122,7 +122,10 @@
                             </a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="{{ route('cek-klaim') }}" rel="noopener">
-                                    Cek Klaim Minus
+                                    Jasa Medis (Non Tindakan)
+                                </a>
+                                <a class="dropdown-item" href="{{ route('cek-klaim-minus-selisih-tindakan') }}" rel="noopener">
+                                    Jasa Medis Tindakan IBS
                                 </a>
                             </div>
                         </li>

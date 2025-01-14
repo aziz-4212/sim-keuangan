@@ -25,7 +25,7 @@
                         Overview - STEP 3
                     </div>
                     <h2 class="page-title">
-                        Cek Klaim (Non Tindakan) - Hasil Sortir (Jasa Visit Minus)
+                        Cek Klaim (Tindakan IBS) - Hasil Sortir (Jasa Medis Minus)
                     </h2>
                 </div>
             </div>
@@ -35,19 +35,6 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header d-flex justify-content-end align-items-center">
-
-                    {{-- <form id="update-jasa-visit-form" method="POST" action="{{ route('update-jasa-visit') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-success" id="prosesButton">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-refresh">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                            </svg>
-                            Update Data Biaya Jasa Visit</button>
-                    </form> --}}
                 </div>
                 <div class="card-body">
 
@@ -82,27 +69,28 @@
                                         <th scope="col">TARIF KLAIM</th>
                                         <th scope="col">SELISIH KLAIM</th>
                                         <th scope="col">NOREG</th>
-                                        <th scope="col">NOMINAL (6%)</th>
-                                        <th scope="col">JASA VISIT RILL</th>
-                                        <th scope="col">SELISIH JASA VISIT</th>
+                                        <th scope="col">NOMINAL (25%)</th>
+                                        <th scope="col">JASA MEDIS RILL</th>
+                                        <th scope="col">SELISIH JASA MEDIS</th>
                                         <th scope="col">#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($data_klaim as $item)
                                         @php
-                                            $enampersen = 0.06 * $item->TARIFKLAIM;
+                                            $duapuluhlimapersen = 0.25 * $item->TARIFKLAIM;
 
-                                            $jasa_visit = DB::connection('sqlsrv')
+                                            $jasa_medis = DB::connection('sqlsrv')
                                                 ->table('TRXPMR')
                                                 ->select('BIAYADRRIIL')
                                                 ->where('NOREG', $item->NOREG)
-                                                ->where('KODEPMR', 'like', 'V%')
+                                                ->whereIn('KODEPMR', ['OKAD01','OKAD02'])
                                                 ->get();
-                                            $total_jasavisit = $jasa_visit->sum('BIAYADRRIIL');
-                                            $selisih_jasavisit = $enampersen - $total_jasavisit;
+
+                                            $total_jasamedis = $jasa_medis->sum('BIAYADRRIIL');
+                                            $selisih_jasamedis = $duapuluhlimapersen - $total_jasamedis;
                                         @endphp
-                                        <tr @if($item->STATUS == 1) style="background-color: darkseagreen; color: white;" @endif>
+                                        <tr @if($item->STATUS_IBS == 1) style="background-color: darkseagreen; color: white;" @endif>
                                             <td>{{ $item->SEP }}</td>
                                             <td>{{ $item->INACBG }}</td>
                                             <td>Rp {{ number_format($item->TARIFRS, 0, ',', '.') }}</td>
@@ -115,31 +103,32 @@
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="disabled-input"
-                                                    value="Rp {{ number_format($enampersen, 0, ',', '.') }}"
+                                                    value="Rp {{ number_format($duapuluhlimapersen, 0, ',', '.') }}"
                                                     style="color: black" disabled>
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="disabled-input"
-                                                    value="Rp {{ number_format($total_jasavisit, 0, ',', '.') }}"
+                                                    value="Rp {{ number_format($total_jasamedis, 0, ',', '.') }}"
                                                     style="color: black" disabled>
                                             </td>
                                             
                                             <td>
-                                                @if($item->STATUS == 1)
+                                                @if($item->STATUS_IBS == 1)
                                                 @else
                                                 <input type="text" class="form-control" name="disabled-input"
-                                                    value="Rp {{ number_format($selisih_jasavisit, 0, ',', '.') }}"
-                                                    style="color: {{ $selisih_jasavisit < 0 ? 'red' : 'black' }};"
+                                                    value="Rp {{ number_format($selisih_jasamedis, 0, ',', '.') }}"
+                                                    style="color: {{ $selisih_jasamedis < 0 ? 'red' : 'black' }};"
                                                     disabled>
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($item->STATUS == 1)
+                                                @if ($item->STATUS_IBS == 1)
                                                     <span class="badge badge-outline text-red">Sudah Update</span>
                                                 @else
                                                 <button class="btn btn-success btn-detail" data-bs-toggle="modal"
                                                     data-bs-target="#modal-simple" data-noreg="{{ $item->NOREG }}"
-                                                    data-enampersen="{{ $enampersen }}">
+                                                    data-duapuluhlimapersen="{{ $duapuluhlimapersen }}">
+                                                    
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -217,154 +206,6 @@
         };
     </script>
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tangkap semua tombol dengan kelas btn-detail
-            const detailButtons = document.querySelectorAll('.btn-detail');
-
-            detailButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const noreg = this.getAttribute('data-noreg'); // Ambil nilai NOREG
-                    const enampersen = this.getAttribute(
-                    'data-enampersen'); // Ambil nilai enampersen
-                    const modalBody = document.querySelector('#modal-simple .modal-body');
-                    const modalTitle = document.querySelector('#modal-simple .modal-title');
-                    // Kosongkan isi modal body sementara
-                    modalBody.innerHTML = '<p>Loading...</p>';
-                    // Update judul modal dengan NOREG
-                    modalTitle.innerHTML = `Detail Jasa Visit - ${noreg}`;
-
-                    // Kirim AJAX request untuk mendapatkan data
-                    fetch(`/detail-jasa-visit?noreg=${noreg}&enampersen=${enampersen}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            let html = `
-                            <form id="updateForm">
-                                <table class="table table-vcenter card-table" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                                    <thead>
-                                        <tr>
-                                            <th style="padding: 8px; text-align: center;">NOPMR</th>
-                                            <th style="padding: 8px; text-align: center;">KODEPMR</th>
-                                            <th style="padding: 8px; text-align: center;">NAMA</th>
-                                            <th style="padding: 8px; text-align: center;">BIAYADR RIIL</th>
-                                            <th style="padding: 8px; text-align: center;">BIAYADR (6%)</th>
-                                            <th style="padding: 8px; text-align: center;">BIAYARS RIIL</th>
-                                            <th style="padding: 8px; text-align: center;">BIAYARS UPDATE</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                        `;
-
-                            let totalBiaya = 0; // Variabel untuk menghitung total biaya
-                            let totalEnamPersen = 0;
-                            let selisih_biayars = 0;
-                            let update_biayars = 0;
-                            let totalBiayaRS = 0;
-                            let totalBiayaRS_update = 0;
-
-                            if (data.length > 0) {
-                                data.forEach((item, index) => {
-                                    const biayadr = parseFloat(item.BIAYADRRIIL) || 0;
-                                    const biayars = parseFloat(item.BIAYARSRIIL) || 0;
-                                    const nilai_perbandingan = parseFloat(item.perbandingan) || 0;
-                                    totalBiaya += biayadr;
-                                    totalEnamPersen += nilai_perbandingan;
-                                    selisih_biayars = biayadr - nilai_perbandingan;
-                                    update_biayars = biayars + selisih_biayars;
-                                    totalBiayaRS += biayars;
-                                    totalBiayaRS_update += update_biayars;
-
-                                    html += `
-                                    <tr>
-                                        <input type="hidden" name="NOREG[${index}]" value="${item.NOREG}" class="form-control">
-
-                                        <td style="padding: 8px;">${item.NOPMR}</td>
-                                        <input type="hidden" name="NOPMR[${index}]" value="${item.NOPMR}" class="form-control">
-
-                                        <td style="padding: 8px;">${item.KODEPMR}</td>
-                                        <input type="hidden" name="KODEPMR[${index}]" value="${item.KODEPMR}" class="form-control">
-
-                                        <td style="padding: 8px;">${item.NAMAPMR}</td>
-                                        
-                                        <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(item.BIAYADRRIIL)}</td>
-                                        <input type="hidden" name="BIAYADRRIIL[${index}]" value="${item.BIAYADRRIIL}" class="form-control">
-
-                                        <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(item.perbandingan)}</td>
-                                        <input type="hidden" name="UPDATE_BIAYADR[${index}]" value="${item.perbandingan}" class="form-control">
-
-                                        <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(item.BIAYARSRIIL)}</td>
-                                        <input type="hidden" name="BIAYARSRIIL[${index}]" value="${item.BIAYARSRIIL}" class="form-control">
-
-                                        <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(update_biayars)}</td>
-                                        <input type="hidden" name="UPDATE_BIAYARS[${index}]" value="${update_biayars}" class="form-control">
-                                    </tr>
-                                `;
-                                });
-
-                                // Tambahkan baris total di bawah tabel
-                                html += `
-                                <tr>
-                                    <td colspan="3" style="padding: 8px; font-weight: bold; text-align: center;">TOTAL</td>
-                                    <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalBiaya)}</td>
-                                    <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalEnamPersen)}</td>
-                                    <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalBiayaRS)}</td>
-                                    <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalBiayaRS_update)}</td>
-                                </tr>
-                            `;
-                            } else {
-                                html += `
-                                <tr>
-                                    <td colspan="3" style="padding: 8px; text-align: center;">No data found</td>
-                                </tr>
-                            `;
-                            }
-
-                            html += `
-                                </tbody>
-                            </table>
-                            <button type="submit" class="btn btn-primary float-end" style="margin-top: 20px;">Update Perubahan</button>
-                            </form>
-                        `;
-
-                            modalBody.innerHTML = html;
-
-                            // Handle form submission
-                            document.querySelector('#updateForm').addEventListener('submit', function(event) {
-                                event.preventDefault();
-                                
-                                const formData = new FormData(this);
-        
-                                fetch('/update-jasa-visit', {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(response => response.json())
-                                .then(result => {
-                                    alert(result.message);
-                                    // Optionally close modal or refresh data
-                                })
-                                .catch(error => {
-                                    console.error('Error updating data:', error);
-                                });
-                            });
-
-                        })
-                        .catch(error => {
-                            modalBody.innerHTML =
-                            `<p>Error fetching data: ${error.message}</p>`;
-                            console.error(error);
-                        });
-
-                });
-            });
-        });
-    </script> --}}
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Tangkap semua tombol dengan kelas btn-detail
@@ -373,7 +214,7 @@
             detailButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const noreg = this.getAttribute('data-noreg'); // Ambil nilai NOREG
-                    const enampersen = this.getAttribute('data-enampersen'); // Ambil nilai enampersen
+                    const duapuluhlimapersen = this.getAttribute('data-duapuluhlimapersen'); // Ambil nilai duapuluhlimapersen
                     const modalBody = document.querySelector('#modal-simple .modal-body');
                     const modalTitle = document.querySelector('#modal-simple .modal-title');
                     
@@ -381,10 +222,10 @@
                     modalBody.innerHTML = '<p>Loading...</p>';
                     
                     // Update judul modal dengan NOREG
-                    modalTitle.innerHTML = `Detail Jasa Visit - ${noreg}`;
+                    modalTitle.innerHTML = `Detail Jasa Medis (Tindakan IBS) - ${noreg}`;
     
                     // Kirim AJAX request untuk mendapatkan data
-                    fetch(`/detail-jasa-visit?noreg=${noreg}&enampersen=${enampersen}`)
+                    fetch(`/detail-jasa-medis-tindakan?noreg=${noreg}&duapuluhlimapersen=${duapuluhlimapersen}`)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -395,7 +236,7 @@
                             const jasaVisitDokter = data.jasa_visit_dokter; // Data array
                             const showUpdateButton = data.showUpdateButton; // Properti boolean
                             let html = `
-                                <form id="updateForm" method="POST" action="{{ route('update-jasa-visit') }}">
+                                <form id="updateForm" method="POST" action="{{ route('update-jasa-medis-tindakan') }}">
                                     @csrf
                                     <table class="table table-vcenter card-table" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
                                         <thead>
@@ -404,7 +245,7 @@
                                                 <th style="padding: 8px; text-align: center;">KODEPMR</th>
                                                 <th style="padding: 8px; text-align: center;">NAMA</th>
                                                 <th style="padding: 8px; text-align: center;">BIAYADR RIIL</th>
-                                                <th style="padding: 8px; text-align: center;">BIAYADR (6%)</th>
+                                                <th style="padding: 8px; text-align: center;">BIAYADR (25%)</th>
                                                 <th style="padding: 8px; text-align: center;">BIAYARS RIIL</th>
                                                 <th style="padding: 8px; text-align: center;">BIAYARS UPDATE</th>
                                             </tr>
@@ -413,7 +254,7 @@
                             `;
     
                             let totalBiaya = 0; // Variabel untuk menghitung total biaya
-                            let totalEnamPersen = 0;
+                            let totalDuaPuluhLimaPersen = 0;
                             let totalBiayaRS = 0;
                             let totalBiayaRS_update = 0;
     
@@ -421,12 +262,12 @@
                                 jasaVisitDokter.forEach((item, index) => {
                                     const biayadr = parseFloat(item.BIAYADRRIIL) || 0;
                                     const biayars = parseFloat(item.BIAYARSRIIL) || 0;
-                                    const perbandingan = parseFloat(item.perbandingan) || 0;
-                                    const selisih_biayars = biayadr - perbandingan;
+                                    const jasa_dialokasikan = parseFloat(item.jasa_dialokasikan) || 0;
+                                    const selisih_biayars = biayadr - jasa_dialokasikan;
                                     const update_biayars = biayars + selisih_biayars;
     
                                     totalBiaya += biayadr;
-                                    totalEnamPersen += perbandingan;
+                                    totalDuaPuluhLimaPersen += jasa_dialokasikan;
                                     totalBiayaRS += biayars;
                                     totalBiayaRS_update += update_biayars;
     
@@ -440,8 +281,8 @@
                                             <td style="padding: 8px;">${item.NAMAPMR}</td>
                                             <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(item.BIAYADRRIIL)}</td>
                                             <input type="hidden" name="BIAYADRRIIL[${index}]" value="${item.BIAYADRRIIL}" class="form-control">
-                                            <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(perbandingan)}</td>
-                                            <input type="hidden" name="UPDATE_BIAYADR[${index}]" value="${perbandingan}" class="form-control">
+                                            <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(jasa_dialokasikan)}</td>
+                                            <input type="hidden" name="UPDATE_BIAYADR[${index}]" value="${jasa_dialokasikan}" class="form-control">
                                             <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(item.BIAYARSRIIL)}</td>
                                             <input type="hidden" name="BIAYARSRIIL[${index}]" value="${item.BIAYARSRIIL}" class="form-control">
                                             <td style="padding: 8px;">Rp ${new Intl.NumberFormat('id-ID').format(update_biayars)}</td>
@@ -455,7 +296,7 @@
                                     <tr>
                                         <td colspan="3" style="padding: 8px; font-weight: bold; text-align: center;">TOTAL</td>
                                         <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalBiaya)}</td>
-                                        <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalEnamPersen)}</td>
+                                        <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalDuaPuluhLimaPersen)}</td>
                                         <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalBiayaRS)}</td>
                                         <td style="padding: 8px; font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(totalBiayaRS_update)}</td>
                                     </tr>

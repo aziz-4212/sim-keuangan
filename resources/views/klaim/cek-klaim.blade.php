@@ -24,7 +24,7 @@
                         Overview - STEP 1
                     </div>
                     <h2 class="page-title">
-                        Cek Klaim
+                        Cek Klaim (Non Tindakan)
                     </h2>
                 </div>
             </div>

@@ -28,13 +28,20 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/jasamedis', [JasaMedisController::class, 'jasaMedis'])->name('jasaMedis');
 
-    // =====================================Klaim Jasa Medis===========================================
-    Route::get('/cek-klaim', [KlaimController::class, 'cek_klaim'])->name('cek-klaim');
-    Route::post('/cek-klaim/proses-selisih', [KlaimController::class, 'proses_selisih'])->name('proses-selisih');
-    Route::get('/cek-klaim/selisih-minus', [KlaimController::class, 'cek_klaim_minus_selisih'])->name('cek-klaim-minus-selisih');
-    Route::get('/cek-klaim/jasa-visit-minus', [KlaimController::class, 'jasa_visit_minus'])->name('jasa-visit-minus');
+    // =====================================Klaim Jasa Medis Non Tindakan===========================================
+    Route::get('/cek-klaim-non-tindakan', [KlaimController::class, 'cek_klaim_non_tindakan'])->name('cek-klaim');
+    Route::post('/cek-klaim-non-tindakan/proses-selisih', [KlaimController::class, 'proses_selisih_non_tindakan'])->name('proses-selisih');
+    Route::get('/cek-klaim-non-tindakan/selisih-minus', [KlaimController::class, 'cek_klaim_minus_selisih_non_tindakan'])->name('cek-klaim-minus-selisih');
+    Route::get('/cek-klaim-non-tindakan/jasa-visit-minus', [KlaimController::class, 'jasa_visit_minus_non_tindakan'])->name('jasa-visit-minus');
     Route::get('/detail-jasa-visit', [KlaimController::class, 'get_detail_jasa_visit']);
-    Route::post('/cek-klaim/jasa-visit-minus/update-jasa-visit', [KlaimController::class, 'update_jasa_visit'])->name('update-jasa-visit');
-    // =====================================End Klaim Jasa Medis===========================================
+    Route::post('/cek-klaim-non-tindakan/jasa-visit-minus/update-jasa-visit', [KlaimController::class, 'update_jasa_visit'])->name('update-jasa-visit');
+    // =====================================End Klaim Jasa Medis Non Tindakan===========================================
+
+    // =====================================Klaim Jasa Medis Tindakan IBS===========================================
+    Route::get('/cek-klaim-tindakan/selisih-minus', [KlaimController::class, 'cek_klaim_minus_selisih_tindakan'])->name('cek-klaim-minus-selisih-tindakan');
+    Route::get('/cek-klaim-tindakan/jasa-medis-minus', [KlaimController::class, 'jasa_medis_minus_tindakan'])->name('jasa-medis-minus-tindakan');
+    Route::get('/detail-jasa-medis-tindakan', [KlaimController::class, 'get_detail_jasa_medis_tindakan']);
+    Route::post('/cek-klaim-tindakan/jasa-medis-minus/update-jasa-medis', [KlaimController::class, 'update_jasa_medis_tindakan'])->name('update-jasa-medis-tindakan');
+    // =====================================End Klaim Jasa Medis Tindakan IBS===========================================
 
 });

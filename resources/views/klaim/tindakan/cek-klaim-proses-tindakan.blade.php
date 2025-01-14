@@ -24,7 +24,7 @@
                         Overview - STEP 2
                     </div>
                     <h2 class="page-title">
-                        Cek Klaim (Non Tindakan)  - Hasil Selisih Klaim Minus
+                        Cek Klaim (Tindakan IBS) - Hasil Selisih Klaim Minus
                     </h2>
                 </div>
             </div>
@@ -55,22 +55,7 @@
                         </div>
                     </form>
 
-                    {{-- <form id="proses-selisih-form" method="GET" action="{{ route('proses-selisih') }}">
-                        <button type="submit" class="btn bg-orange" id="prosesButton">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-table-minus">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12.5 21h-7.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10" />
-                                <path d="M3 10h18" />
-                                <path d="M10 3v18" />
-                                <path d="M16 19h6" />
-                            </svg>
-                            Sortir Jasa Visit Minus </button>
-                    </form> --}}
-
-                    <a href="{{ route('jasa-visit-minus') }}" class="btn bg-orange" id="prosesButton">
+                    <a href="{{ route('jasa-medis-minus-tindakan') }}" class="btn bg-orange" id="prosesButton">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-table-minus">
@@ -80,7 +65,7 @@
                             <path d="M10 3v18" />
                             <path d="M16 19h6" />
                         </svg>
-                        Sortir Jasa Visit Minus
+                        Sortir Jasa Medis Minus
                     </a>
                     
                 </div>
@@ -116,25 +101,25 @@
                                         <th scope="col">TARIF KLAIM</th>
                                         <th scope="col">SELISIH KLAIM</th>
                                         <th scope="col">NOREG</th>
-                                        <th scope="col">NOMINAL (6%)</th>
-                                        <th scope="col">JASA VISIT RILL</th>
+                                        <th scope="col">NOMINAL (25%)</th>
+                                        <th scope="col">JASA MEDIS RILL</th>
                                         <th scope="col">SELISIH JASA VISIT</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($data_klaim as $item)
                                         @php
-                                            $enampersen = 0.06 * $item->TARIFKLAIM;
+                                            $duapuluhlimapersen = 0.25 * $item->TARIFKLAIM;
 
-                                            $jasa_visit = DB::connection('sqlsrv')
+                                            $jasa_medis = DB::connection('sqlsrv')
                                                 ->table('TRXPMR')
                                                 ->select('BIAYADRRIIL')
                                                 ->where('NOREG', $item->NOREG)
-                                                ->where('KODEPMR', 'like', 'V%')
+                                                ->whereIn('KODEPMR', ['OKAD01','OKAD02'])
                                                 ->get();
-                                            $total_jasavisit = $jasa_visit->sum('BIAYADRRIIL');
+                                            $total_jasamedis = $jasa_medis->sum('BIAYADRRIIL');
 
-                                            $selisih_jasavisit = $enampersen - $total_jasavisit;
+                                            $selisih_jasamedis = $duapuluhlimapersen - $total_jasamedis;
                                         @endphp
                                         <tr>
                                             <td>{{ $item->SEP }}</td>
@@ -149,18 +134,18 @@
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="disabled-input"
-                                                value="Rp {{ number_format($enampersen, 0, ',', '.') }}"
+                                                value="Rp {{ number_format($duapuluhlimapersen, 0, ',', '.') }}"
                                                 style="color: black" disabled>
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="disabled-input"
-                                                value="Rp {{ number_format($total_jasavisit, 0, ',', '.') }}"
+                                                value="Rp {{ number_format($total_jasamedis, 0, ',', '.') }}"
                                                 style="color: black" disabled>
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="disabled-input"
-                                                    value="Rp {{ number_format($selisih_jasavisit, 0, ',', '.') }}"
-                                                    style="color: {{ $selisih_jasavisit < 0 ? 'red' : 'black' }};" disabled>
+                                                    value="Rp {{ number_format($selisih_jasamedis, 0, ',', '.') }}"
+                                                    style="color: {{ $selisih_jasamedis < 0 ? 'red' : 'black' }};" disabled>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -183,7 +168,7 @@
     
             // Tunggu 2 detik sebelum mengarahkan ke rute
             setTimeout(function() {
-                window.location.href = "{{ route('jasa-visit-minus') }}";
+                window.location.href = "{{ route('jasa-medis-minus-tindakan') }}";
             }, 2000);
         });
     </script>
